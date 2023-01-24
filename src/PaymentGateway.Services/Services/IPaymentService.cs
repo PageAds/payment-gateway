@@ -4,6 +4,8 @@ namespace PaymentGateway.Services.Services
 {
     public interface IPaymentService
     {
-        Payment CreatePayment(Payment payment);
+        Task<Payment> CreatePayment(Payment payment);
+
+        Task<Payment> GetPayment(long id);
     }
 }

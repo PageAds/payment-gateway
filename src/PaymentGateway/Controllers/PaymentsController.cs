@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Domain.Models;
 using PaymentGateway.Extensions;
 using PaymentGateway.Mappers;
 using PaymentGateway.Models;
@@ -37,7 +38,7 @@ namespace PaymentGateway.Controllers
 
             try
             {
-                paymentService.CreatePayment(payment);
+                await paymentService.CreatePayment(payment);
             }
             catch (ValidationException ex)
             {
@@ -50,6 +51,18 @@ namespace PaymentGateway.Controllers
             }
 
             return CreatedAtAction(nameof(Process), payment);
+        }
+        /// <summary>
+        /// Retrieve a Payment by PaymentId
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        [HttpGet("{paymentId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Payment))]
+        public async Task<IActionResult> Get(long paymentId)
+        {
+            var payment = await paymentService.GetPayment(paymentId);
+            return Ok(payment);
         }
     } 
 }

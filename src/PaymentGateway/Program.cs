@@ -1,5 +1,9 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using PaymentGateway.Data.Helpers;
+using PaymentGateway.Data.Repositories;
+using PaymentGateway.Domain.Repositories;
 using PaymentGateway.Filters;
 using PaymentGateway.Mappers;
 using PaymentGateway.Services.Services;
@@ -16,6 +20,10 @@ namespace PaymentGateway
 
             builder.Services.AddTransient<IPaymentMapper, PaymentMapper>();
             builder.Services.AddTransient<IPaymentService, PaymentService>();
+            builder.Services.AddTransient<IPaymentRepository, InMemoryPaymentRepository>();
+
+            builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
+            builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 
             builder.Services.AddValidatorsFromAssemblyContaining<PaymentValidator>();
 
