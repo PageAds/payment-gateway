@@ -7,6 +7,7 @@ using Shouldly;
 using System.Net;
 using System.Text;
 using Xunit;
+using PaymentViewModel = PaymentGateway.Models.ViewModels.Payment;
 
 namespace PaymentGateway.IntegrationTests
 {
@@ -48,15 +49,13 @@ namespace PaymentGateway.IntegrationTests
             response.Content.ShouldNotBeNull();
             var responseContentString = await response.Content.ReadAsStringAsync();
 
-            var payment = JsonConvert.DeserializeObject<Payment>(responseContentString);
+            var payment = JsonConvert.DeserializeObject<PaymentViewModel>(responseContentString);
             payment.ShouldNotBeNull();
             payment.Id.ShouldBeGreaterThan(0);
+            payment.Status.ShouldNotBeNull();
             payment.CardNumber.ShouldBe(paymentRequest.CardNumber);
-            payment.CardExpiryMonth.ShouldBe(paymentRequest.CardExpiryMonth);
-            payment.CardExpiryYear.ShouldBe(paymentRequest.CardExpiryYear);
             payment.Amount.ShouldBe(paymentRequest.Amount);
             payment.Currency.ShouldBe(paymentRequest.Currency);
-            payment.CVV.ShouldBe(paymentRequest.CVV);
         }
 
         [Theory]
@@ -266,7 +265,7 @@ namespace PaymentGateway.IntegrationTests
             var postPaymentResponse = await client.PostAsync("/payments", stringContent);
             var postPaymentResponseContentString = await postPaymentResponse.Content.ReadAsStringAsync();
 
-            var payment = JsonConvert.DeserializeObject<Payment>(postPaymentResponseContentString);
+            var payment = JsonConvert.DeserializeObject<PaymentViewModel>(postPaymentResponseContentString);
             payment.ShouldNotBeNull();
 
             var getPaymentResponse = await client.GetAsync($"/payments/{payment.Id}");
@@ -276,17 +275,14 @@ namespace PaymentGateway.IntegrationTests
             getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
             var getPaymentResponseContentString = await getPaymentResponse.Content.ReadAsStringAsync();
 
-            var getPayment = JsonConvert.DeserializeObject<Payment>(getPaymentResponseContentString);
+            var getPayment = JsonConvert.DeserializeObject<PaymentViewModel>(getPaymentResponseContentString);
             getPayment.ShouldNotBeNull();
             getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-            getPayment.ShouldNotBeNull();
             getPayment.Id.ShouldBe(payment.Id);
+            getPayment.Status.ShouldNotBeNull();
             getPayment.CardNumber.ShouldBe(payment.CardNumber);
-            getPayment.CardExpiryMonth.ShouldBe(payment.CardExpiryMonth);
-            getPayment.CardExpiryYear.ShouldBe(payment.CardExpiryYear);
             getPayment.Amount.ShouldBe(payment.Amount);
             getPayment.Currency.ShouldBe(payment.Currency);
-            getPayment.CVV.ShouldBe(payment.CVV);
         }
 
         [Fact]

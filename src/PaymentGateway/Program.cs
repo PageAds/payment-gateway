@@ -25,6 +25,7 @@ namespace PaymentGateway
             builder.Services.AddTransient<IPaymentRepository, InMemoryPaymentRepository>();
             builder.Services.AddTransient<IBankApiClient, BankApiClient>();
             builder.Services.AddTransient<IBankApiPaymentRequestMapper, BankApiPaymentRequestMapper>();
+            builder.Services.AddTransient<IPaymentViewModelMapper, PaymentViewModelMapper>();
 
             builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
             builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
