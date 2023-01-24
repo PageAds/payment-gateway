@@ -11,7 +11,10 @@ namespace PaymentGateway.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(PaymentRequest paymentRequest)
         {
-            return CreatedAtAction(nameof(Create), null);
+            var paymentResponse = new PaymentResponse(1, paymentRequest.CardNumber, paymentRequest.CardExpiryMonth,
+                paymentRequest.CardExpiryYear, paymentRequest.Amount, paymentRequest.Currency, paymentRequest.CVV);
+
+            return CreatedAtAction(nameof(Create), paymentResponse);
         }
     }
 }
