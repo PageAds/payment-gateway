@@ -8,13 +8,19 @@ namespace PaymentGateway.Services.Validators
         public PaymentValidator()
         {
             RuleFor(x => x.CardNumber).NotEmpty()
-                .WithMessage("Card number is mandatory");
+                .WithMessage("CardNumber is mandatory");
 
             RuleFor(x => x.CardNumber).Length(12, 19) // according to https://www.validcreditcardnumber.com/
-                .WithMessage("Card number must have a length between 12 and 19 numeric characters");
+                .WithMessage("CardNumber must have a length between 12 and 19 numeric characters");
 
             RuleFor(x => x.CardNumber).Must(BeDigitsOnly)
-                .WithMessage("Card number must only cotnain numeric characters");
+                .WithMessage("CardNumber must only contain numeric characters");
+
+            RuleFor(x => x.CardExpiryMonth).GreaterThanOrEqualTo(1)
+                .WithMessage("CardExpiryMonth must be between 1 and 12");
+
+            RuleFor(x => x.CardExpiryMonth).LessThanOrEqualTo(12)
+                .WithMessage("CardExpiryMonth must be between 1 and 12");
         }
 
         private bool BeDigitsOnly(string str)

@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using PaymentGateway.Filters;
 using PaymentGateway.Mappers;
 using PaymentGateway.Services.Services;
