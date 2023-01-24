@@ -14,6 +14,10 @@
 
         public long Id { get; set; }
 
+        public long ExternalId { get; set; }
+
+        public string Status { get; set; }
+
         public string CardNumber { get; }
 
         public int CardExpiryMonth { get; }

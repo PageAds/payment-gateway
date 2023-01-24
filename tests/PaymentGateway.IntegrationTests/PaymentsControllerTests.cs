@@ -140,7 +140,7 @@ namespace PaymentGateway.IntegrationTests
             errorResponse.ShouldNotBeNull();
             errorResponse.Errors.Count.ShouldBe(2);
             errorResponse.Errors.Single(x => x.FieldName == nameof(Payment.CardExpiryYear)).ShouldNotBeNull();
-            errorResponse.Errors.Single(x => x.FieldName == "CardExpiry").ShouldNotBeNull();
+            errorResponse.Errors.Single(x => x.FieldName == "CardExpiryMonth").ShouldNotBeNull();
         }
 
         [Fact]
