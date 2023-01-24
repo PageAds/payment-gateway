@@ -168,7 +168,7 @@ namespace PaymentGateway.IntegrationTests
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
             errorResponse.ShouldNotBeNull();
             errorResponse.Errors.Count.ShouldBe(1);
-            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryYear));
+            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryMonth));
         }
 
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
