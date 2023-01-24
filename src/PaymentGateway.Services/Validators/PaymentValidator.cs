@@ -21,6 +21,9 @@ namespace PaymentGateway.Services.Validators
 
             RuleFor(x => x.CardExpiryMonth).LessThanOrEqualTo(12)
                 .WithMessage("CardExpiryMonth must be between 1 and 12");
+
+            RuleFor(x => x.CardExpiryYear).GreaterThanOrEqualTo(DateTimeOffset.UtcNow.Year)
+                .WithMessage("CardExpiryYear must be assigned to the current year or future");
         }
 
         private bool BeDigitsOnly(string str)
