@@ -26,7 +26,7 @@ namespace PaymentGateway.IntegrationTests
             // Act
             var response = await client.PostAsync("/payments", stringContent);
 
-            // Assrt
+            // Assert
             response.ShouldNotBeNull();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
@@ -43,7 +43,7 @@ namespace PaymentGateway.IntegrationTests
             // Act
             var response = await client.PostAsync("/payments", stringContent);
 
-            // Assrt
+            // Assert
             response.ShouldNotBeNull();
             response.Content.ShouldNotBeNull();
             var responseContentString = await response.Content.ReadAsStringAsync();
@@ -251,6 +251,42 @@ namespace PaymentGateway.IntegrationTests
             errorResponse.ShouldNotBeNull();
             errorResponse.Errors.Count.ShouldBe(1);
             errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CVV));
+        }
+
+        [Fact]
+        public async Task Get_Payment_ReturnsHttpOKResponse()
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var paymentRequest = CreatePaymentRequest();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var postPaymentResponse = await client.PostAsync("/payments", stringContent);
+            var postPaymentResponseContentString = await postPaymentResponse.Content.ReadAsStringAsync();
+
+            var payment = JsonConvert.DeserializeObject<Payment>(postPaymentResponseContentString);
+            payment.ShouldNotBeNull();
+
+            var getPaymentResponse = await client.GetAsync($"/payments/{payment.Id}");
+
+            // Assert
+            getPaymentResponse.ShouldNotBeNull();
+            getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var getPaymentResponseContentString = await getPaymentResponse.Content.ReadAsStringAsync();
+
+            var getPayment = JsonConvert.DeserializeObject<Payment>(getPaymentResponseContentString);
+            getPayment.ShouldNotBeNull();
+            getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getPayment.ShouldNotBeNull();
+            getPayment.Id.ShouldBe(payment.Id);
+            getPayment.CardNumber.ShouldBe(payment.CardNumber);
+            getPayment.CardExpiryMonth.ShouldBe(payment.CardExpiryMonth);
+            getPayment.CardExpiryYear.ShouldBe(payment.CardExpiryYear);
+            getPayment.Amount.ShouldBe(payment.Amount);
+            getPayment.Currency.ShouldBe(payment.Currency);
+            getPayment.CVV.ShouldBe(payment.CVV);
         }
 
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
