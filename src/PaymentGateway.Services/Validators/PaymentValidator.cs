@@ -16,14 +16,16 @@ namespace PaymentGateway.Services.Validators
             RuleFor(x => x.CardNumber).Must(BeDigitsOnly)
                 .WithMessage("CardNumber must only contain numeric characters");
 
-            RuleFor(x => x.CardExpiryMonth).GreaterThanOrEqualTo(1)
-                .WithMessage("CardExpiryMonth must be between 1 and 12");
-
-            RuleFor(x => x.CardExpiryMonth).LessThanOrEqualTo(12)
+            RuleFor(x => x.CardExpiryMonth).Must(BeAValidExpiryMonth)
                 .WithMessage("CardExpiryMonth must be between 1 and 12");
 
             RuleFor(x => x.CardExpiryYear).GreaterThanOrEqualTo(DateTimeOffset.UtcNow.Year)
-                .WithMessage("CardExpiryYear must be assigned to the current year or future");
+                .WithMessage("CardExpiryYear is in the past");
+
+            RuleFor(x => x).Must(BeACardExpiryInTheFuture)
+                .WithName("CardExpiry")
+                .WithMessage("CardExpiry is in the past")
+                .When(x => BeAValidExpiryMonth(x.CardExpiryMonth));
         }
 
         private bool BeDigitsOnly(string str)
@@ -35,6 +37,19 @@ namespace PaymentGateway.Services.Validators
             }
 
             return true;
+        }
+
+        private bool BeAValidExpiryMonth(int cardExpiryMonth)
+        {
+            return cardExpiryMonth >= 1 && cardExpiryMonth <= 12;
+        }
+
+        private bool BeACardExpiryInTheFuture(Payment payment)
+        {
+            var lastDayOfMonth = DateTime.DaysInMonth(payment.CardExpiryYear, payment.CardExpiryMonth);
+            var cardExiryDateTime = new DateTimeOffset(payment.CardExpiryYear, payment.CardExpiryMonth, lastDayOfMonth, 0, 0, 0, default);
+
+            return cardExiryDateTime >= DateTimeOffset.UtcNow;
         }
     }
 }

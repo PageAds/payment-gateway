@@ -113,13 +113,17 @@ namespace PaymentGateway.IntegrationTests
             errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryMonth));
         }
 
-        [Theory]
-        [InlineData(2020)] // in the past
-        public async Task Post_PaymentWithAnInvalidCardExpiryYear_ReturnsUnprocessableEntityErrorResponse(int cardExpiryYear)
+        [Fact]
+        public async Task Post_PaymentWithACardExpiryYearInThePast_ReturnsUnprocessableEntityErrorResponse()
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
             var client = application.CreateClient();
+
+            var currentYear = DateTimeOffset.UtcNow.Year;
+            var generator = fixture.Create<Generator<int>>();
+            var cardExpiryYear = generator.Where(x => x >= 1900 && x < currentYear).Distinct().Take(1).Single();
+
             var paymentRequest = CreatePaymentRequest(cardExpiryYear: cardExpiryYear);
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
@@ -134,8 +138,9 @@ namespace PaymentGateway.IntegrationTests
 
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
             errorResponse.ShouldNotBeNull();
-            errorResponse.Errors.Count.ShouldBe(1);
-            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryYear));
+            errorResponse.Errors.Count.ShouldBe(2);
+            errorResponse.Errors.Single(x => x.FieldName == nameof(Payment.CardExpiryYear)).ShouldNotBeNull();
+            errorResponse.Errors.Single(x => x.FieldName == "CardExpiry").ShouldNotBeNull();
         }
 
         [Fact]
@@ -168,7 +173,7 @@ namespace PaymentGateway.IntegrationTests
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
             errorResponse.ShouldNotBeNull();
             errorResponse.Errors.Count.ShouldBe(1);
-            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryMonth));
+            errorResponse.Errors.Single().FieldName.ShouldBe("CardExpiry");
         }
 
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
