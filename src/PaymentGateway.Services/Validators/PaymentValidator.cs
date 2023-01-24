@@ -25,8 +25,8 @@ namespace PaymentGateway.Services.Validators
                 .WithMessage("CardExpiryYear is in the past");
 
             RuleFor(x => x).Must(BeACardExpiryInTheFuture)
-                .WithName("CardExpiry")
-                .WithMessage("CardExpiry is in the past")
+                .WithName("CardExpiryMonth")
+                .WithMessage("CardExpiryMonth is in the past")
                 .When(x => BeAValidExpiryMonth(x.CardExpiryMonth));
            
             RuleFor(x => x.Amount).GreaterThan(0)

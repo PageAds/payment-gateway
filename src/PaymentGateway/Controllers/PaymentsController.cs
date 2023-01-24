@@ -14,13 +14,16 @@ namespace PaymentGateway.Controllers
     {
         private readonly IPaymentMapper paymentMapper;
         private readonly IPaymentService paymentService;
-         
+        private readonly ILogger logger;
+
         public PaymentsController(
             IPaymentMapper paymentMapper,
-            IPaymentService paymentService)
+            IPaymentService paymentService,
+            ILogger<PaymentsController> logger)
         {
             this.paymentMapper = paymentMapper;
             this.paymentService = paymentService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -59,9 +62,17 @@ namespace PaymentGateway.Controllers
         /// <returns></returns>
         [HttpGet("{paymentId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Payment))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> Get(long paymentId)
         {
             var payment = await paymentService.GetPayment(paymentId);
+
+            if (payment == null)
+            {
+                logger.LogWarning($"Payment not found with Id: {paymentId}");
+                return NotFound(new ErrorResponse { Errors = new List<Error> { new Error() { Message = "Payment not found" } } });
+            }
+
             return Ok(payment);
         }
     } 

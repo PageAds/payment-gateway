@@ -173,7 +173,7 @@ namespace PaymentGateway.IntegrationTests
             var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
             errorResponse.ShouldNotBeNull();
             errorResponse.Errors.Count.ShouldBe(1);
-            errorResponse.Errors.Single().FieldName.ShouldBe("CardExpiry");
+            errorResponse.Errors.Single().FieldName.ShouldBe("CardExpiryMonth");
         }
 
         [Theory]
