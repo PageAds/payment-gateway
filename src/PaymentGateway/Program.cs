@@ -1,9 +1,11 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using PaymentGateway.Filters;
 using PaymentGateway.Mappers;
 using PaymentGateway.Services.Services;
 using PaymentGateway.Services.Validators;
+using System.Reflection;
 
 namespace PaymentGateway
 {
@@ -29,7 +31,11 @@ namespace PaymentGateway
             });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             var app = builder.Build();
 

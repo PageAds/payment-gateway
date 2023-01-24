@@ -22,6 +22,11 @@ namespace PaymentGateway.Controllers
             this.paymentService = paymentService;
         }
 
+        /// <summary>
+        /// Processes and stores a Payment
+        /// </summary>
+        /// <param name="paymentRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
