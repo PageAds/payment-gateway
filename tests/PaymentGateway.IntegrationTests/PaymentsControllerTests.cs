@@ -18,7 +18,7 @@ namespace PaymentGateway.IntegrationTests
 
             var client = application.CreateClient();
 
-            var payment = new PaymentRequest("5479630754337041", 4, 2027, 10.00m, "GBP", "123");
+            var payment = CreatePaymentRequest();
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(payment), Encoding.UTF8, "application/json");
 
@@ -38,14 +38,7 @@ namespace PaymentGateway.IntegrationTests
 
             var client = application.CreateClient();
 
-            var cardNumber = "5479630754337041";
-            var cardExpiryMonth = 4;
-            var cardExpiryYear = 2027;
-            var amount = 10.00m;
-            var currency = "GBP";
-            var cvv = "123";
-
-            var paymentRequest = new PaymentRequest(cardNumber, cardExpiryMonth, cardExpiryYear, amount, currency, cvv);
+            var paymentRequest = CreatePaymentRequest();
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
@@ -60,12 +53,40 @@ namespace PaymentGateway.IntegrationTests
             var paymentResponse = JsonConvert.DeserializeObject<PaymentResponse>(responseContentString);
             paymentResponse.ShouldNotBeNull();
             paymentResponse.Id.ShouldBeGreaterThan(0);
-            paymentResponse.CardNumber.ShouldBe(cardNumber);
-            paymentResponse.CardExpiryMonth.ShouldBe(cardExpiryMonth);
-            paymentResponse.CardExpiryYear.ShouldBe(cardExpiryYear);
-            paymentResponse.Amount.ShouldBe(amount);
-            paymentResponse.Currency.ShouldBe(currency);
-            paymentResponse.CVV.ShouldBe(cvv);
+            paymentResponse.CardNumber.ShouldBe(paymentRequest.CardNumber);
+            paymentResponse.CardExpiryMonth.ShouldBe(paymentRequest.CardExpiryMonth);
+            paymentResponse.CardExpiryYear.ShouldBe(paymentRequest.CardExpiryYear);
+            paymentResponse.Amount.ShouldBe(paymentRequest.Amount);
+            paymentResponse.Currency.ShouldBe(paymentRequest.Currency);
+            paymentResponse.CVV.ShouldBe(paymentRequest.CVV);
+        }
+
+        [Theory]
+        [InlineData("1234")] // too short
+        [InlineData("123456789123456789123456789")] // too long
+        [InlineData("!23456abc1234567")] // contains non numeric characters
+        public async Task Post_WhenAPaymentIsCreatedWithAnInvalidCardNumber_ReturnsUnprocessableEntityResponse(string cardNumber)
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+
+            var client = application.CreateClient();
+
+            var paymentRequest = CreatePaymentRequest(cardNumber: cardNumber);
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await client.PostAsync("/payments", stringContent);
+
+            // Assrt
+            response.ShouldNotBeNull();
+            response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        }
+
+        private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
+        {
+            return new PaymentRequest(cardNumber, cardExpiryMonth, cardExpiryYear, amount, currency, cvv);
         }
     }
 }
