@@ -226,6 +226,33 @@ namespace PaymentGateway.IntegrationTests
             errorResponse.Errors.Single().FieldName.ShouldBe(nameof(Payment.Currency));
         }
 
+        [Theory]
+        [InlineData("1")] // too short
+        [InlineData("1234")] // too long
+        [InlineData("!23")] // contains non numeric characters
+        public async Task Post_PaymentWithAnInvalidCVV_ReturnsUnprocessableEntityErrorResponse(string cvv)
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var paymentRequest = CreatePaymentRequest(cvv: cvv);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await client.PostAsync("/payments", stringContent);
+
+            // Assert
+            response.ShouldNotBeNull();
+            response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+            response.Content.ShouldNotBeNull();
+            var responseContentString = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
+            errorResponse.ShouldNotBeNull();
+            errorResponse.Errors.Count.ShouldBe(1);
+            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CVV));
+        }
+
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
         {
             return new PaymentRequest(cardNumber, cardExpiryMonth, cardExpiryYear, amount, currency, cvv);
