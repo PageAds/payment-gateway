@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Models;
@@ -11,16 +12,15 @@ namespace PaymentGateway.IntegrationTests
 {
     public class PaymentsControllerTests
     {
+        private Fixture fixture = new Fixture();
+
         [Fact]
         public async Task Post_Payment_ReturnsHttpCreatedResponse()
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
-
             var client = application.CreateClient();
-
             var payment = CreatePaymentRequest();
-
             var stringContent = new StringContent(JsonConvert.SerializeObject(payment), Encoding.UTF8, "application/json");
 
             // Act
@@ -36,11 +36,8 @@ namespace PaymentGateway.IntegrationTests
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
-
             var client = application.CreateClient();
-
             var paymentRequest = CreatePaymentRequest();
-
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
             // Act
@@ -70,11 +67,8 @@ namespace PaymentGateway.IntegrationTests
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
-
             var client = application.CreateClient();
-
             var paymentRequest = CreatePaymentRequest(cardNumber: cardNumber);
-
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
             // Act
@@ -100,11 +94,8 @@ namespace PaymentGateway.IntegrationTests
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
-
             var client = application.CreateClient();
-
             var paymentRequest = CreatePaymentRequest(cardExpiryMonth: cardExpiryMonth);
-
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
             // Act
@@ -128,11 +119,41 @@ namespace PaymentGateway.IntegrationTests
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var paymentRequest = CreatePaymentRequest(cardExpiryYear: cardExpiryYear);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
+            // Act
+            var response = await client.PostAsync("/payments", stringContent);
+
+            // Assert
+            response.ShouldNotBeNull();
+            response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+            response.Content.ShouldNotBeNull();
+            var responseContentString = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
+            errorResponse.ShouldNotBeNull();
+            errorResponse.Errors.Count.ShouldBe(1);
+            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardExpiryYear));
+        }
+
+        [Fact]
+        public async Task Post_PaymentWithACardExpiryInThePastThisYear_ReturnsUnprocessableEntityErrorResponse()
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
             var client = application.CreateClient();
 
-            var paymentRequest = CreatePaymentRequest(cardExpiryYear: cardExpiryYear);
+            var currentMonth = DateTimeOffset.UtcNow.Month;
+            if (currentMonth == 1) // January is a bad time to run this unit test since bank cards expire at the end of the month written on the card
+                return;
 
+            var generator = fixture.Create<Generator<int>>();
+            var cardExpiryMonth = generator.Where(x => x >= 1 && x < currentMonth).Distinct().Take(1).Single();
+            var cardExpiryYear = DateTimeOffset.UtcNow.Year;
+
+            var paymentRequest = CreatePaymentRequest(cardExpiryMonth: cardExpiryMonth, cardExpiryYear: cardExpiryYear);
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
             // Act
