@@ -13,7 +13,7 @@ namespace PaymentGateway.Controllers
     {
         private readonly IPaymentMapper paymentMapper;
         private readonly IPaymentService paymentService;
-
+         
         public PaymentsController(
             IPaymentMapper paymentMapper,
             IPaymentService paymentService)
@@ -24,8 +24,9 @@ namespace PaymentGateway.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ValidationErrorModel))]
-        public async Task<IActionResult> Create(PaymentRequest paymentRequest)
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> Process(PaymentRequest paymentRequest)
         {
             var payment = paymentMapper.Map(paymentRequest);
 
@@ -35,15 +36,15 @@ namespace PaymentGateway.Controllers
             }
             catch (ValidationException ex)
             {
-                var errorModel = new ValidationErrorModel
+                var errorResponse = new ErrorResponse
                 {
-                    Properties = ex.Errors.ToErrorProperties()
+                    Errors = ex.Errors.ToErrorProperties().ToList()
                 };
 
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, errorModel);
+                return UnprocessableEntity(errorResponse);
             }
 
-            return CreatedAtAction(nameof(Create), payment);
+            return CreatedAtAction(nameof(Process), payment);
         }
-    }
+    } 
 }

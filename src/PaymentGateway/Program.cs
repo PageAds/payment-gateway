@@ -1,4 +1,6 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.Filters;
 using PaymentGateway.Mappers;
 using PaymentGateway.Services.Services;
 using PaymentGateway.Services.Validators;
@@ -16,7 +18,15 @@ namespace PaymentGateway
 
             builder.Services.AddValidatorsFromAssemblyContaining<PaymentValidator>();
 
-            builder.Services.AddControllers();
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            });
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

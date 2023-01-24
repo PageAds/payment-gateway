@@ -5,14 +5,13 @@ namespace PaymentGateway.Extensions
 {
     public static class ValidationFailureExtensions
     {
-        public static IEnumerable<ErrorProperty> ToErrorProperties(this IEnumerable<ValidationFailure> validationFailures)
+        public static IEnumerable<Error> ToErrorProperties(this IEnumerable<ValidationFailure> validationFailures)
         {
             return validationFailures
-                .GroupBy(x => x.PropertyName)
-                .Select(group => new ErrorProperty 
+                .Select(x => new Error 
                 { 
-                    PropertyName = group.Key, 
-                    Errors = group.ToList().Select(x => x.ErrorMessage) 
+                    FieldName = x.PropertyName,
+                    Message = x.ErrorMessage
                 });
         }
     }
