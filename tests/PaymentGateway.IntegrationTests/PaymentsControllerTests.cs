@@ -176,6 +176,31 @@ namespace PaymentGateway.IntegrationTests
             errorResponse.Errors.Single().FieldName.ShouldBe("CardExpiry");
         }
 
+        [Theory]
+        [InlineData(-1.00)]
+        [InlineData(0)]
+        public async Task Post_PaymentWithANegativeOrZeroAmount_ReturnsUnprocessableEntityErrorResponse(decimal amount)
+        {
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var paymentRequest = CreatePaymentRequest(amount: amount);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await client.PostAsync("/payments", stringContent);
+
+            // Assert
+            response.ShouldNotBeNull();
+            response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+            response.Content.ShouldNotBeNull();
+            var responseContentString = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
+            errorResponse.ShouldNotBeNull();
+            errorResponse.Errors.Count.ShouldBe(1);
+            errorResponse.Errors.Single().FieldName.ShouldBe("CardExpiry");
+        }
+
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
         {
             return new PaymentRequest(cardNumber, cardExpiryMonth, cardExpiryYear, amount, currency, cvv);
