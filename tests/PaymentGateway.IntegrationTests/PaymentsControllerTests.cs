@@ -66,7 +66,7 @@ namespace PaymentGateway.IntegrationTests
         [InlineData("1234")] // too short
         [InlineData("123456789123456789123456789")] // too long
         [InlineData("!23456abc1234567")] // contains non numeric characters
-        public async Task Post_WhenAPaymentIsCreatedWithAnInvalidCardNumber_ReturnsUnprocessableEntityResponse(string cardNumber)
+        public async Task Post_WhenAPaymentIsCreatedWithAnInvalidCardNumber_ReturnsUnprocessableEntityErrorResponse(string cardNumber)
         {
             // Arrange
             var application = new WebApplicationFactory<Program>();
@@ -80,9 +80,16 @@ namespace PaymentGateway.IntegrationTests
             // Act
             var response = await client.PostAsync("/payments", stringContent);
 
-            // Assrt
+            // Assert
             response.ShouldNotBeNull();
             response.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+            response.Content.ShouldNotBeNull();
+            var responseContentString = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ErrorResponse>(responseContentString);
+            errorResponse.ShouldNotBeNull();
+            errorResponse.Errors.Count.ShouldBe(1);
+            errorResponse.Errors.Single().FieldName.ShouldBe(nameof(PaymentRequest.CardNumber));
         }
 
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
