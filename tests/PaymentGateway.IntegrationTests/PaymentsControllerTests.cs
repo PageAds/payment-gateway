@@ -146,7 +146,7 @@ namespace PaymentGateway.IntegrationTests
             var client = application.CreateClient();
 
             var currentMonth = DateTimeOffset.UtcNow.Month;
-            if (currentMonth == 1) // January is a bad time to run this unit test since bank cards expire at the end of the month written on the card
+            if (currentMonth == 1) // January is a bad time to run this test since bank cards expire at the end of the month written on the card
                 return;
 
             var generator = fixture.Create<Generator<int>>();
