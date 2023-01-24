@@ -26,6 +26,9 @@ namespace PaymentGateway.Services.Validators
                 .WithName("CardExpiry")
                 .WithMessage("CardExpiry is in the past")
                 .When(x => BeAValidExpiryMonth(x.CardExpiryMonth));
+           
+            RuleFor(x => x.Amount).GreaterThan(0)
+                .WithMessage("Amount must be greater than 0");
         }
 
         private bool BeDigitsOnly(string str)
