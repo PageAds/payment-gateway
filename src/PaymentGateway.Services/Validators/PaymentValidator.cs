@@ -5,6 +5,8 @@ namespace PaymentGateway.Services.Validators
 {
     public class PaymentValidator : AbstractValidator<Payment>
     {
+        private IEnumerable<string> validCurrencies = new List<string> { "GBP", "USD" };
+
         public PaymentValidator()
         {
             RuleFor(x => x.CardNumber).NotEmpty()
@@ -29,6 +31,12 @@ namespace PaymentGateway.Services.Validators
            
             RuleFor(x => x.Amount).GreaterThan(0)
                 .WithMessage("Amount must be greater than 0");
+
+            RuleFor(x => x.Currency).NotEmpty()
+                .WithMessage("Currency is mandatory");
+
+            RuleFor(x => x.Currency).Must(BeAValidCurrency)
+                .WithMessage($"Currency is invalid. Must be one of the following supported currencies: {string.Join(", ", validCurrencies)}");
         }
 
         private bool BeDigitsOnly(string str)
@@ -53,6 +61,11 @@ namespace PaymentGateway.Services.Validators
             var cardExiryDateTime = new DateTimeOffset(payment.CardExpiryYear, payment.CardExpiryMonth, lastDayOfMonth, 0, 0, 0, default);
 
             return cardExiryDateTime >= DateTimeOffset.UtcNow;
+        }
+
+        private bool BeAValidCurrency(string currency)
+        {
+            return validCurrencies.Contains(currency);
         }
     }
 }
