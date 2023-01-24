@@ -37,6 +37,15 @@ namespace PaymentGateway.Services.Validators
 
             RuleFor(x => x.Currency).Must(BeAValidCurrency)
                 .WithMessage($"Currency is invalid. Must be one of the following supported currencies: {string.Join(", ", validCurrencies)}");
+
+            RuleFor(x => x.CVV).NotEmpty()
+                .WithMessage("CVV is mandatory");
+
+            RuleFor(x => x.CVV).Length(3)
+                .WithMessage("CVV must be 3 numeric characters");
+            
+            RuleFor(x => x.CVV).Must(BeDigitsOnly)
+                .WithMessage("CVV must only contain numeric characters");
         }
 
         private bool BeDigitsOnly(string str)
