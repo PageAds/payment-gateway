@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
+using PaymentGateway.Domain.Models;
 using PaymentGateway.Models;
 using Shouldly;
 using System.Net;
@@ -50,15 +51,15 @@ namespace PaymentGateway.IntegrationTests
             response.Content.ShouldNotBeNull();
             var responseContentString = await response.Content.ReadAsStringAsync();
 
-            var paymentResponse = JsonConvert.DeserializeObject<PaymentResponse>(responseContentString);
-            paymentResponse.ShouldNotBeNull();
-            paymentResponse.Id.ShouldBeGreaterThan(0);
-            paymentResponse.CardNumber.ShouldBe(paymentRequest.CardNumber);
-            paymentResponse.CardExpiryMonth.ShouldBe(paymentRequest.CardExpiryMonth);
-            paymentResponse.CardExpiryYear.ShouldBe(paymentRequest.CardExpiryYear);
-            paymentResponse.Amount.ShouldBe(paymentRequest.Amount);
-            paymentResponse.Currency.ShouldBe(paymentRequest.Currency);
-            paymentResponse.CVV.ShouldBe(paymentRequest.CVV);
+            var payment = JsonConvert.DeserializeObject<Payment>(responseContentString);
+            payment.ShouldNotBeNull();
+            payment.Id.ShouldBeGreaterThan(0);
+            payment.CardNumber.ShouldBe(paymentRequest.CardNumber);
+            payment.CardExpiryMonth.ShouldBe(paymentRequest.CardExpiryMonth);
+            payment.CardExpiryYear.ShouldBe(paymentRequest.CardExpiryYear);
+            payment.Amount.ShouldBe(paymentRequest.Amount);
+            payment.Currency.ShouldBe(paymentRequest.Currency);
+            payment.CVV.ShouldBe(paymentRequest.CVV);
         }
 
         [Theory]
