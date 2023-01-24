@@ -289,6 +289,21 @@ namespace PaymentGateway.IntegrationTests
             getPayment.CVV.ShouldBe(payment.CVV);
         }
 
+        [Fact]
+        public async Task Get_PaymentIsNotFound_ReturnsHttpNotFoundResponse()
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+
+            // Act
+            var getPaymentResponse = await client.GetAsync($"/payments/1");
+
+            // Assert
+            getPaymentResponse.ShouldNotBeNull();
+            getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        }
+
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
         {
             return new PaymentRequest(cardNumber, cardExpiryMonth, cardExpiryYear, amount, currency, cvv);
