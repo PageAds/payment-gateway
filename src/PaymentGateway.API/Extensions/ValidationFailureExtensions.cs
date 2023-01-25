@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
-using PaymentGateway.Models;
+using PaymentGateway.API.Models;
 
-namespace PaymentGateway.Extensions
+namespace PaymentGateway.API.Extensions
 {
     public static class ValidationFailureExtensions
     {

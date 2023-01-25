@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using PaymentGateway.API.Extensions;
+using PaymentGateway.API.Mappers;
+using PaymentGateway.API.Models;
 using PaymentGateway.Domain.Services;
-using PaymentGateway.Extensions;
-using PaymentGateway.Mappers;
-using PaymentGateway.Models;
-using PaymentViewModel = PaymentGateway.Models.ViewModels.Payment;
+using PaymentViewModel = PaymentGateway.API.Models.ViewModels.Payment;
 
-namespace PaymentGateway.Controllers
+namespace PaymentGateway.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Models;
+using PaymentGateway.API.Models;
 
-namespace PaymentGateway.Filters
+namespace PaymentGateway.API.Filters
 {
     public class ValidationFilter : IAsyncActionFilter
     {

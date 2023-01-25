@@ -4,14 +4,15 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using PaymentGateway.AcceptanceTests.Mocks;
+using PaymentGateway.API;
+using PaymentGateway.API.Models;
 using PaymentGateway.Domain.Models;
 using PaymentGateway.Infrastructure.HttpClients;
-using PaymentGateway.Models;
 using Shouldly;
 using System.Net;
 using System.Text;
 using Xunit;
-using PaymentViewModel = PaymentGateway.Models.ViewModels.Payment;
+using PaymentViewModel = PaymentGateway.API.Models.ViewModels.Payment;
 
 namespace PaymentGateway.IntegrationTests
 {

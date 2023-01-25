@@ -1,7 +1,7 @@
-﻿using PaymentGateway.Domain.Models;
-using PaymentGateway.Models;
+﻿using PaymentGateway.API.Models;
+using PaymentGateway.Domain.Models;
 
-namespace PaymentGateway.Mappers
+namespace PaymentGateway.API.Mappers
 {
     public interface IPaymentMapper
     {

@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Models.ViewModels
+﻿namespace PaymentGateway.API.Models.ViewModels
 {
     public class Payment
     {

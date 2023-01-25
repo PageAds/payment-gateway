@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Mappers
+﻿namespace PaymentGateway.API.Mappers
 {
     public class PaymentViewModelMapper : IPaymentViewModelMapper
     {

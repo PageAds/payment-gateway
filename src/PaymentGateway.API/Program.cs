@@ -1,17 +1,17 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using PaymentGateway.API.Filters;
+using PaymentGateway.API.Mappers;
 using PaymentGateway.Application.Services;
 using PaymentGateway.Domain.Services;
 using PaymentGateway.Domain.Validators;
-using PaymentGateway.Filters;
 using PaymentGateway.Infrastructure.Handlers;
 using PaymentGateway.Infrastructure.HttpClients;
 using PaymentGateway.Infrastructure.Mappers;
-using PaymentGateway.Mappers;
 using System.Reflection;
 
-namespace PaymentGateway
+namespace PaymentGateway.API
 {
     public class Program
     {
