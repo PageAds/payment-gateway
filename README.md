@@ -21,3 +21,9 @@
     `dotnet test`
 
 3. This will execute the tests and output a result indicating the success or failure of the tests
+
+# Assumptions made
+- No requirement for the Payment Gateway to store the Payment entity
+    - This is important if an additional bank needs to be integrated since the Id of the Payment entity is currently derived from a single bank. 
+    - To elaborate further, in a world where the Payment Gateway is integrating with multiple banks then storing the payment entity would allow for an internal Payment Id (managed by the Payment Gateway) to be generated that can be exposed to the client. The external Payment Id (managed by the Bank) can be saved against the Payment entity which we store for the purpose of retrieving the Payment from the banks API.
+    - This could also be useful if the banks API is rate limited (as a fallback we can load the Payment entity which has been stored prior).
