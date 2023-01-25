@@ -5,6 +5,7 @@ using PaymentGateway.Application.Services;
 using PaymentGateway.Domain.Services;
 using PaymentGateway.Domain.Validators;
 using PaymentGateway.Filters;
+using PaymentGateway.Infrastructure.Handlers;
 using PaymentGateway.Infrastructure.HttpClients;
 using PaymentGateway.Infrastructure.Mappers;
 using PaymentGateway.Mappers;
@@ -24,13 +25,15 @@ namespace PaymentGateway
             builder.Services.AddTransient<IBankApiPaymentRequestMapper, BankApiPaymentRequestMapper>();
             builder.Services.AddTransient<IPaymentViewModelMapper, PaymentViewModelMapper>();
             builder.Services.AddTransient<Infrastructure.Mappers.IPaymentMapper, Infrastructure.Mappers.PaymentMapper>();
+            builder.Services.AddTransient<UnsuccessfulStatusCodeLoggerHandler>();
 
             builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 
             builder.Services.AddHttpClient<IBankApiClient, BankApiClient>((httpClient) =>
             {
                 httpClient.BaseAddress = new Uri(builder.Configuration["BankApiBaseUrl"]);
-            });
+            })
+            .AddHttpMessageHandler<UnsuccessfulStatusCodeLoggerHandler>();
 
             builder.Services.AddValidatorsFromAssemblyContaining<PaymentValidator>();
 

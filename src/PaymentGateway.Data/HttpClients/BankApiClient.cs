@@ -33,8 +33,6 @@ namespace PaymentGateway.Infrastructure.HttpClients
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                logger.LogError($"Failed to get payment using GET {httpResponseMessage?.RequestMessage?.RequestUri} " +
-                    $"with status code: {httpResponseMessage.StatusCode} and response body: {responseString}");
                 throw new Exception("Failed to get payment");
             }
 
@@ -49,8 +47,6 @@ namespace PaymentGateway.Infrastructure.HttpClients
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                logger.LogError($"Failed to submit payment using POST {httpResponseMessage?.RequestMessage?.RequestUri} " +
-                    $"with status code: {httpResponseMessage.StatusCode} and response body: {responseString}");
                 throw new Exception("Failed to submit payment");
             }
 
