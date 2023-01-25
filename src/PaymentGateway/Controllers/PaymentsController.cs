@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using PaymentGateway.Domain.Models;
+using PaymentGateway.Domain.Services;
 using PaymentGateway.Extensions;
 using PaymentGateway.Mappers;
 using PaymentGateway.Models;
-using PaymentGateway.Services.Services;
 using PaymentViewModel = PaymentGateway.Models.ViewModels.Payment;
 
 namespace PaymentGateway.Controllers
