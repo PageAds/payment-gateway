@@ -253,6 +253,30 @@ namespace PaymentGateway.IntegrationTests
         }
 
         [Fact]
+        public async Task Post_Payment_ReturnsMaskedAccountNumber()
+        {
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var cardNumber = "1234567890123456";
+            var expectedMaskedCardNumber = "************3456";
+            var paymentRequest = CreatePaymentRequest(cardNumber: cardNumber);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await client.PostAsync("/payments", stringContent);
+
+            // Assert
+            response.ShouldNotBeNull();
+            response.Content.ShouldNotBeNull();
+            var responseContentString = await response.Content.ReadAsStringAsync();
+
+            var payment = JsonConvert.DeserializeObject<PaymentViewModel>(responseContentString);
+            payment.ShouldNotBeNull();
+            payment.CardNumber.ShouldBe(expectedMaskedCardNumber);
+        }
+
+        [Fact]
         public async Task Get_Payment_ReturnsHttpOKResponse()
         {
             // Arrange
@@ -298,6 +322,38 @@ namespace PaymentGateway.IntegrationTests
             // Assert
             getPaymentResponse.ShouldNotBeNull();
             getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task Get_Payment_ReturnsMaskedAccountNumber()
+        {
+
+            // Arrange
+            var application = new WebApplicationFactory<Program>();
+            var client = application.CreateClient();
+            var cardNumber = "1234567890123456";
+            var expectedMaskedCardNumber = "************3456";
+            var paymentRequest = CreatePaymentRequest(cardNumber: cardNumber);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
+
+            // Act
+            var postPaymentResponse = await client.PostAsync("/payments", stringContent);
+            var postPaymentResponseContentString = await postPaymentResponse.Content.ReadAsStringAsync();
+
+            var payment = JsonConvert.DeserializeObject<PaymentViewModel>(postPaymentResponseContentString);
+            payment.ShouldNotBeNull();
+
+            var getPaymentResponse = await client.GetAsync($"/payments/{payment.Id}");
+
+            // Assert
+            getPaymentResponse.ShouldNotBeNull();
+            getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var getPaymentResponseContentString = await getPaymentResponse.Content.ReadAsStringAsync();
+
+            var getPayment = JsonConvert.DeserializeObject<PaymentViewModel>(getPaymentResponseContentString);
+            getPayment.ShouldNotBeNull();
+            getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+            getPayment.CardNumber.ShouldBe(expectedMaskedCardNumber);
         }
 
         private PaymentRequest CreatePaymentRequest(string cardNumber = "5479630754337041", int cardExpiryMonth = 4, int cardExpiryYear = 2027, decimal amount = 10.00m, string currency = "GBP", string cvv = "123")
