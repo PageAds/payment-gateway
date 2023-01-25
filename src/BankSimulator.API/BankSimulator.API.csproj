@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PaymentGateway.Data\PaymentGateway.Infrastructure.csproj" />
+    <ProjectReference Include="..\PaymentGateway.Infrastructure\PaymentGateway.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
