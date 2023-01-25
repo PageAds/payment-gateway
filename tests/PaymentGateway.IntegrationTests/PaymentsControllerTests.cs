@@ -53,7 +53,7 @@ namespace PaymentGateway.IntegrationTests
             payment.ShouldNotBeNull();
             payment.Id.ShouldBeGreaterThan(0);
             payment.Status.ShouldNotBeNull();
-            payment.CardNumber.ShouldBe(paymentRequest.CardNumber);
+            payment.CardNumber.ShouldNotBeNull();
             payment.Amount.ShouldBe(paymentRequest.Amount);
             payment.Currency.ShouldBe(paymentRequest.Currency);
         }

@@ -6,7 +6,10 @@
         {
             Id = id;
             Status = status;
-            CardNumber = cardNumber;
+
+            // Mask card number except last 4 digits
+            CardNumber = cardNumber.Substring(cardNumber.Length - 4).PadLeft(cardNumber.Length, '*');
+
             Amount = amount;
             Currency = currency;
         }
