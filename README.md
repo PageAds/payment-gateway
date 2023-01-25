@@ -5,7 +5,7 @@
 
 ## Instructions
 1. Clone the repository to your local machine using Git.
-2. Open two instances of a terminal (e.g. Windows Command Prompt), navigate to the root of the repository and run the following commands:
+2. Open two instances of a terminal (e.g. Windows Command Prompt), navigate to the root of the repository and run the following commands (each command should be run in a separate terminal instance):
     -  `dotnet run --project src\BankSimulator.API`
     -  `dotnet watch run --project src\PaymentGateway.API`
 3. The last command will open a browser to the Swagger UI of the Payment Gateway API where you can execute two endpoints:
