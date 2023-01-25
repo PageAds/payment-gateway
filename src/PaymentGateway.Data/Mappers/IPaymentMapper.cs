@@ -3,8 +3,8 @@ using PaymentGateway.Infrastructure.Models;
 
 namespace PaymentGateway.Infrastructure.Mappers
 {
-    public interface IBankApiPaymentRequestMapper
+    public interface IPaymentMapper
     {
-        BankApiPaymentRequest Map(Payment payment);
+        Payment Map(BankApiPaymentResponse response);
     }
 }

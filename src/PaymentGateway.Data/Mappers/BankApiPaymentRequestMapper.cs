@@ -1,7 +1,7 @@
-﻿using PaymentGateway.Data.Models;
+﻿using PaymentGateway.Infrastructure.Models;
 using PaymentGateway.Domain.Models;
 
-namespace PaymentGateway.Data.Mappers
+namespace PaymentGateway.Infrastructure.Mappers
 {
     public class BankApiPaymentRequestMapper : IBankApiPaymentRequestMapper
     {

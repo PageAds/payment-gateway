@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Data.Helpers
+﻿namespace BankSimulator.Helpers
 {
     public interface IIdGenerator
     {

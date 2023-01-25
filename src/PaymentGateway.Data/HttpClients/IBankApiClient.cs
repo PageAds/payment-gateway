@@ -1,6 +1,6 @@
-﻿using PaymentGateway.Data.Models;
+﻿using PaymentGateway.Infrastructure.Models;
 
-namespace PaymentGateway.Data.HttpClients
+namespace PaymentGateway.Infrastructure.HttpClients
 {
     public interface IBankApiClient
     {

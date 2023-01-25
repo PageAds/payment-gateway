@@ -1,4 +1,4 @@
-﻿namespace PaymentGateway.Data.Models
+﻿namespace PaymentGateway.Infrastructure.Models
 {
     public class BankApiPaymentRequest
     {

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.API", "src\PaymentGateway\PaymentGateway.API.csproj", "{DDC27642-5F28-45E4-AAAC-9A09B7F55D81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.IntegrationTests", "tests\PaymentGateway.IntegrationTests\PaymentGateway.IntegrationTests.csproj", "{7C3D071E-17A8-4FD8-BACB-43FB6074EF4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.AcceptanceTests", "tests\PaymentGateway.AcceptanceTests\PaymentGateway.AcceptanceTests.csproj", "{7C3D071E-17A8-4FD8-BACB-43FB6074EF4C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4C3F6955-82C2-4E0D-9356-DBE3817D9C7A}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGateway.Infrastructure", "src\PaymentGateway.Data\PaymentGateway.Infrastructure.csproj", "{3A6DD5CA-4750-4179-893F-FA0E4DA8DD54}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGateway.Application", "src\PaymentGateway.Application\PaymentGateway.Application.csproj", "{38CED502-F0D2-43AC-B407-957261876DB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankSimulator.API", "src\BankSimulator.API\BankSimulator.API.csproj", "{0BD76414-E696-4BD4-88F7-ED810D29BD82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{38CED502-F0D2-43AC-B407-957261876DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38CED502-F0D2-43AC-B407-957261876DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38CED502-F0D2-43AC-B407-957261876DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD76414-E696-4BD4-88F7-ED810D29BD82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD76414-E696-4BD4-88F7-ED810D29BD82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD76414-E696-4BD4-88F7-ED810D29BD82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD76414-E696-4BD4-88F7-ED810D29BD82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,14 +2,11 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PaymentGateway.Application.Services;
-using PaymentGateway.Data.Helpers;
-using PaymentGateway.Data.HttpClients;
-using PaymentGateway.Data.Mappers;
-using PaymentGateway.Data.Repositories;
-using PaymentGateway.Domain.Repositories;
 using PaymentGateway.Domain.Services;
 using PaymentGateway.Domain.Validators;
 using PaymentGateway.Filters;
+using PaymentGateway.Infrastructure.HttpClients;
+using PaymentGateway.Infrastructure.Mappers;
 using PaymentGateway.Mappers;
 using System.Reflection;
 
@@ -21,15 +18,19 @@ namespace PaymentGateway
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddTransient<IPaymentMapper, PaymentMapper>();
+            builder.Services.AddTransient<Mappers.IPaymentMapper, Mappers.PaymentMapper>();
             builder.Services.AddTransient<IPaymentService, PaymentService>();
-            builder.Services.AddTransient<IPaymentRepository, InMemoryPaymentRepository>();
             builder.Services.AddTransient<IBankApiClient, BankApiClient>();
             builder.Services.AddTransient<IBankApiPaymentRequestMapper, BankApiPaymentRequestMapper>();
             builder.Services.AddTransient<IPaymentViewModelMapper, PaymentViewModelMapper>();
+            builder.Services.AddTransient<Infrastructure.Mappers.IPaymentMapper, Infrastructure.Mappers.PaymentMapper>();
 
-            builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
             builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
+
+            builder.Services.AddHttpClient<IBankApiClient, BankApiClient>((httpClient) =>
+            {
+                httpClient.BaseAddress = new Uri(builder.Configuration["BankApiBaseUrl"]);
+            });
 
             builder.Services.AddValidatorsFromAssemblyContaining<PaymentValidator>();
 

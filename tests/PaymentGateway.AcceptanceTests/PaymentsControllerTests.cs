@@ -1,7 +1,11 @@
 ﻿using AutoFixture;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using PaymentGateway.AcceptanceTests.Mocks;
 using PaymentGateway.Domain.Models;
+using PaymentGateway.Infrastructure.HttpClients;
 using PaymentGateway.Models;
 using Shouldly;
 using System.Net;
@@ -19,7 +23,15 @@ namespace PaymentGateway.IntegrationTests
         public async Task Post_Payment_ReturnsHttpCreatedResponse()
         {
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddTransient<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
             var payment = CreatePaymentRequest();
             var stringContent = new StringContent(JsonConvert.SerializeObject(payment), Encoding.UTF8, "application/json");
@@ -36,7 +48,15 @@ namespace PaymentGateway.IntegrationTests
         public async Task Post_Payment_ReturnsCreatedPaymentInHttpResponseBody()
         {
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddTransient<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
             var paymentRequest = CreatePaymentRequest();
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
@@ -259,7 +279,15 @@ namespace PaymentGateway.IntegrationTests
         public async Task Post_Payment_ReturnsMaskedAccountNumber()
         {
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddTransient<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
             var cardNumber = "1234567890123456";
             var expectedMaskedCardNumber = "************3456";
@@ -283,7 +311,15 @@ namespace PaymentGateway.IntegrationTests
         public async Task Get_Payment_ReturnsHttpOKResponse()
         {
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
             var paymentRequest = CreatePaymentRequest();
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
@@ -319,7 +355,15 @@ namespace PaymentGateway.IntegrationTests
         public async Task Get_PaymentIsNotFound_ReturnsHttpNotFoundResponse()
         {
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddTransient<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
 
             // Act
@@ -333,9 +377,16 @@ namespace PaymentGateway.IntegrationTests
         [Fact]
         public async Task Get_Payment_ReturnsMaskedAccountNumber()
         {
-
             // Arrange
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton<IBankApiClient, BankApiClientMock>();
+                    });
+                });
+
             var client = application.CreateClient();
             var cardNumber = "1234567890123456";
             var expectedMaskedCardNumber = "************3456";
