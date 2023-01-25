@@ -27,9 +27,17 @@
     - This is important if an additional bank needs to be integrated since the Id of the Payment entity is currently derived from a single bank. 
     - To elaborate further, in a world where the Payment Gateway is integrating with multiple banks then storing the Payment entity would allow for an internal Payment Id (managed by the Payment Gateway) to be generated that can be exposed to the client. The external Payment Id (managed by the Bank) can be saved against the Payment entity which we store for the purpose of retrieving the Payment from the banks API.
     - This could also be useful if the banks API is rate limited (as a fallback we can load the Payment entity which has been stored prior).
-- Card number length validation is between 13 and 19 characters to support all bank cards listed [here](https://www.validcreditcardnumber.com/)
+- Card number length validation is between 13 and 19 characters to support all bank cards listed [here](https://www.validcreditcardnumber.com/) (under the "How many digits in a Credit Card Number?") section
 
 # Areas for improvement
-- Add RegEx for more accurate validation on card numbers.
+- Add RegEx for more accurate validation of card numbers.
 - Access to the Payment Gateway is currently not authenticated. A Payment Gateway identity server could be implemented to issue access tokens (e.g. as part of [OAuth2](https://oauth.net/2/) protocol). This identity server could then be consumed by the Payment Gateway service to validate incoming access tokens.
 - Configure HTTPS
+
+# If deployed to production
+- In Azure (what I am most familiar with), create the following resources:
+    - `App Service` to host the service
+    - `Application Insights` for application telemetry (observability)
+    - `Key Vault` if any sensitive configuration needs to be stored (e.g. credentials to access the banks API)
+- In the repository, create a YAML pipeline to build/test and deploy the service to a pre-production environment (with an approval step for production).
+- Use a logging provider such as [Microsoft.Extensions.Logging.ApplicationInsights](https://www.nuget.org/packages/Microsoft.Extensions.Logging.ApplicationInsights) to ensure application logs can be monitored when hosted in Azure.
