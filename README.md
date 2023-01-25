@@ -35,10 +35,10 @@
 - Configure HTTPS.
 
 # If deployed to production
-- In Azure (what I am most familiar with), create the following resources:
+- In Azure (what I am most familiar with), create the following resources per environment:
     - [App Service](https://azure.microsoft.com/en-us/products/app-service/#overview) - to host the service.
     - [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview?tabs=net) - for application telemetry (observability).
         - After creating this resource an `Instrumentation Key` will be issued, the value of this will need to be added to the App Services application settings with the name `APPINSIGHTS_INSTRUMENTATIONKEY`.
-    - [Key Vault](https://azure.microsoft.com/en-us/products/key-vault/) - if any sensitive configuration needs to be stored (e.g. credentials to access the banks API).
-- In the repository, create a YAML pipeline to build/test and deploy the service to a pre-production environment (with an approval step for production).
+    - [Key Vault](https://azure.microsoft.com/en-us/products/key-vault/) - should any sensitive configuration needs to be stored (e.g. credentials to access the banks API).
+- Within the Git repository, create a YAML pipeline to build/test and deploy the service to a pre-production environment (with an approval step for production).
 - Use a logging provider such as [Microsoft.Extensions.Logging.ApplicationInsights](https://www.nuget.org/packages/Microsoft.Extensions.Logging.ApplicationInsights) to ensure application logs can be monitored when hosted in Azure.
