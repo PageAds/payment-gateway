@@ -17,9 +17,7 @@
 ## Instructions
 1. Clone the repository to your local machine using Git.
 2. Open an instance of a terminal (e.g. Windows Command Prompt), navigate to the root of the repository and run the following command:
-
     `dotnet test`
-
 3. This will execute the tests and output a result indicating the success or failure of the tests.
 
 # Assumptions made
