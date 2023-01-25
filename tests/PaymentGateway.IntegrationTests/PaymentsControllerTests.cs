@@ -54,8 +54,11 @@ namespace PaymentGateway.IntegrationTests
             payment.Id.ShouldBeGreaterThan(0);
             payment.Status.ShouldNotBeNull();
             payment.CardNumber.ShouldNotBeNull();
+            payment.CardExpiryMonth.ShouldBe(paymentRequest.CardExpiryMonth);
+            payment.CardExpiryYear.ShouldBe(paymentRequest.CardExpiryYear);
             payment.Amount.ShouldBe(paymentRequest.Amount);
             payment.Currency.ShouldBe(paymentRequest.Currency);
+            payment.CVV.ShouldBe(paymentRequest.CVV);
         }
 
         [Theory]
@@ -305,8 +308,11 @@ namespace PaymentGateway.IntegrationTests
             getPayment.Id.ShouldBe(payment.Id);
             getPayment.Status.ShouldNotBeNull();
             getPayment.CardNumber.ShouldBe(payment.CardNumber);
+            getPayment.CardExpiryMonth.ShouldBe(payment.CardExpiryMonth);
+            getPayment.CardExpiryYear.ShouldBe(payment.CardExpiryYear);
             getPayment.Amount.ShouldBe(payment.Amount);
             getPayment.Currency.ShouldBe(payment.Currency);
+            getPayment.CVV.ShouldBe(payment.CVV);
         }
 
         [Fact]
