@@ -30,7 +30,7 @@ namespace PaymentGateway.API.Controllers
         }
 
         /// <summary>
-        /// Processes and stores a Payment
+        /// Process a Payment
         /// </summary>
         /// <param name="paymentRequest"></param>
         /// <returns></returns>
