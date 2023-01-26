@@ -14,6 +14,10 @@
 4. Alternatively you can make API requests with any client of your choice (e.g. Postman) to the URL that the service is running on (this is configured by default to be http://localhost:5201/).
 
 # Running the tests
+## Prerequisites
+- [Git](https://git-scm.com/downloads)
+- [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download)
+
 ## Instructions
 1. Clone the repository to your local machine using Git.
 2. Open an instance of a terminal (e.g. Windows Command Prompt), navigate to the root of the repository and run the following command:
