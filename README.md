@@ -38,7 +38,7 @@
 
 # Cloud technologies
 Perform the following if ever required to host the application in the cloud:
-- In Azure (what I am most familiar with), create the following resources per environment:
+- In Azure (what I am most familiar with), create the following resources for each API service, per environment:
     - [App Service](https://azure.microsoft.com/en-us/products/app-service/#overview) - to host the service.
     - [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview?tabs=net) - for application telemetry (observability).
         - After creating this resource an `Instrumentation Key` will be issued, the value of this will need to be added to the App Services application settings with the name `APPINSIGHTS_INSTRUMENTATIONKEY`.
