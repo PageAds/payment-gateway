@@ -36,11 +36,14 @@
 - Access to the Payment Gateway is currently not authenticated. A Payment Gateway identity server could be implemented to issue access tokens (e.g. as part of [OAuth2](https://oauth.net/2/) protocol). This identity server could then be consumed by the Payment Gateway service to validate incoming access tokens.
 - Configure HTTPS.
 
-# If deployed to production
+# Cloud technologies
+Perform the following if ever required to host the application in the cloud:
 - In Azure (what I am most familiar with), create the following resources per environment:
     - [App Service](https://azure.microsoft.com/en-us/products/app-service/#overview) - to host the service.
     - [Application Insights](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview?tabs=net) - for application telemetry (observability).
         - After creating this resource an `Instrumentation Key` will be issued, the value of this will need to be added to the App Services application settings with the name `APPINSIGHTS_INSTRUMENTATIONKEY`.
     - [Key Vault](https://azure.microsoft.com/en-us/products/key-vault/) - should any sensitive configuration needs to be stored (e.g. credentials to access the banks API).
+    - [Azure Cache for Redis](https://azure.microsoft.com/en-us/products/cache/) - in case the app service is scaled out across multiple instances
+        - This could be utilised by the Bank Simulator API since it's currently storing/reading from an in memory cache, but it could be changed to use a distributed cache instead.
 - Within the Git repository, create a YAML pipeline to build/test and deploy the service to a pre-production environment (with an approval step for production).
 - Use a logging provider such as [Microsoft.Extensions.Logging.ApplicationInsights](https://www.nuget.org/packages/Microsoft.Extensions.Logging.ApplicationInsights) to ensure application logs can be monitored when hosted in Azure.
