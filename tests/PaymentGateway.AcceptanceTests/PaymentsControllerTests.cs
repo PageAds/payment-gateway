@@ -375,8 +375,10 @@ namespace PaymentGateway.IntegrationTests
             getPaymentResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         }
 
-        [Fact]
-        public async Task Get_Payment_ReturnsMaskedAccountNumber()
+        [Theory]
+        [InlineData("1234567890123456", "************3456")]
+        [InlineData("1234567890123", "*********0123")]
+        public async Task Get_Payment_ReturnsMaskedAccountNumber(string cardNumber, string expectedMaskedCardNumber)
         {
             // Arrange
             var application = new WebApplicationFactory<Program>()
@@ -389,8 +391,6 @@ namespace PaymentGateway.IntegrationTests
                 });
 
             var client = application.CreateClient();
-            var cardNumber = "1234567890123456";
-            var expectedMaskedCardNumber = "************3456";
             var paymentRequest = CreatePaymentRequest(cardNumber: cardNumber);
             var stringContent = new StringContent(JsonConvert.SerializeObject(paymentRequest), Encoding.UTF8, "application/json");
 
